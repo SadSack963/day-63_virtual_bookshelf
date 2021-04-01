@@ -69,7 +69,7 @@ https://flask-sqlalchemy.palletsprojects.com/en/2.x/api/
 For the common case of having one Flask application all you have to do is to create your Flask application,
   load the configuration of choice and then create the SQLAlchemy object by passing it the application.
 Once created, that object then contains all the functions and helpers from both sqlalchemy and sqlalchemy.orm.
-  Furthermore it provides a class called Model that is a declarative base which can be used to declare models:
+  Furthermore it provides a class called Model that is a declarative base which can be used to declare models.
 """
 # Create the Flask application
 app = Flask(__name__)
@@ -78,8 +78,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Significant overhead if 
 db = SQLAlchemy(app)  # create the SQLAlchemy object by passing it the application
 
 
-class Book(db.Model):
-    id = db.Column('id', db.Integer, primary_key=True)
+class Books(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(250), unique=True, nullable=False)
     author = db.Column(db.String(250), unique=False, nullable=False)
     rating = db.Column(db.Float(), unique=False, nullable=False)
@@ -92,19 +92,24 @@ class Book(db.Model):
 
         :return: string
         """
+        # This will allow each book object to be identified by its title when printed.
         return f'<Book: {self.title}>'
 
 
-# Create the database file
+# Create the database file and tables
+# This code must come _after_ the class definition
 if not os.path.isfile(FILE_URI):
     db.create_all()
 
-book = Book(title='Harry Potter', author='J. K. Rowling', rating='9.3')
+
+# Create a book and store it in the database file
+book = Books(title='Harry Potter', author='J. K. Rowling', rating='9.3')
 print(book.__repr__())
 db.session.add(book)
 db.session.commit()
 
-# CRUD = Create, Read, Update, and Delete
+
+# CRUD (Create, Read, Update, and Delete)
 
 
 # all_books = []
