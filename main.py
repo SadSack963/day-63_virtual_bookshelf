@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-
 # Create the database file in /database/new-books-collection.db
 FILE_URL = 'sqlite:///database/new-books-collection.db'
 
@@ -29,13 +28,8 @@ if not os.path.isfile(FILE_URL):
     db.create_all()
 
 
-def db_new_book(title, author, rating):
-    # Create a book and store it in the database file
-    book = Books(title=title, author=author, rating=rating)
-    print(book)
-    db.session.add(book)
-    db.session.commit()
-
+# ROUTES
+# ======
 
 @app.route('/')
 def home():
@@ -47,12 +41,38 @@ def home():
 @app.route("/add", methods=["GET", "POST"])
 def add():
     if request.method == 'POST':
-        title = request.form['title']
-        author = request.form['author']
-        rating = request.form['rating']
-        db_new_book(title=title, author=author, rating=rating)
+        # Get data from the "name" parameters in the form <input> fields
+        # Create a new book object and store it in the database file
+        db.session.add(
+            Books(
+                title=request.form['title'],
+                author=request.form['author'],
+                rating=request.form['rating']
+            )
+        )
+        db.session.commit()
         return redirect(url_for('home'))
     return render_template('add.html')
+
+
+@app.route("/edit", methods=["GET", "POST"])
+def edit_rating():
+    if request.method == 'POST':
+        # Get data from the "name" parameters in the form <input> fields and update the rating
+        Books.query.get(request.form['book_id']).rating = request.form['new_rating']
+        db.session.commit()
+        return redirect(url_for('home'))
+    # Get book_id from the argument in the <a> tag and find the book in the database
+    book = Books.query.get(request.args.get('book_id'))
+    return render_template('edit_rating.html', book=book)
+
+
+@app.route("/delete")
+def delete_book():
+    # Get book_id from the argument in the <a> tag, find the book in the database and delete it
+    db.session.delete(Books.query.get(request.args.get('book_id')))
+    db.session.commit()
+    return redirect(url_for('home'))
 
 
 if __name__ == "__main__":

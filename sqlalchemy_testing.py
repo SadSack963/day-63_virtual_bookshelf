@@ -104,40 +104,41 @@ class Books(db.Model):
 if not os.path.isfile(FILE_URL):
     db.create_all()
 
-# Create a book and store it in the database file
-book = Books(title='Harry Potter', author='J. K. Rowling', rating='9.3')
-print(book.__repr__())
-db.session.add(book)
-db.session.commit()
-
+# # Create a book and store it in the database file
+# book = Books(title='Harry Potter', author='J. K. Rowling', rating='9.3')
+# print(book.__repr__())
+# db.session.add(book)
+# db.session.commit()
+#
 
 # CRUD (Create, Read, Update, and Delete)
 # =======================================
 
-# Read All Records into a list formatted by __repr__()
-all_books = db.session.query(Books).all()
-print(f'all_books: {all_books}')
-# >>> all_books: [<Book: Harry Potter, J. K. Rowling>, ... <Book: Harry Potter 5, J. K. Rowling>]
-
-# Read A Particular Record By Query
-book = Books.query.filter_by(title="Harry Potter").first()
-print(f'book: {book}')
-# >>> book: <Book: Harry Potter, J. K. Rowling>
-
-# Update A Particular Record By Query
-book_to_update = Books.query.filter_by(title="Harry Potter").first()
-book_to_update.title = "Harry Potter and the Chamber of Secrets"
-db.session.commit()
-
-# Update A Record By PRIMARY KEY
-book_id = 2
-book_to_update = Books.query.get(book_id)
-book_to_update.title = "Harry Potter and the Goblet of Fire"
-db.session.commit()
+# # Read All Records into a list formatted by __repr__()
+# all_books = db.session.query(Books).all()
+# print(f'all_books: {all_books}')
+# # >>> all_books: [<Book: Harry Potter, J. K. Rowling>, ... <Book: Harry Potter 5, J. K. Rowling>]
+#
+# # Read A Particular Record By Query
+# book = Books.query.filter_by(title="Harry Potter").first()
+# print(f'book: {book}')
+# # >>> book: <Book: Harry Potter, J. K. Rowling>
+#
+# # Update A Particular Record By Query
+# book_to_update = Books.query.filter_by(title="Harry Potter").first()
+# book_to_update.title = "Harry Potter and the Chamber of Secrets"
+# db.session.commit()
+#
+# # Update A Record By PRIMARY KEY
+# book_id = 2
+# book_to_update = Books.query.get(book_id)
+# book_to_update.title = "Harry Potter and the Goblet of Fire"
+# db.session.commit()
 
 # Delete A Particular Record By PRIMARY KEY
 # Note: This does not update the primary key of remaining records.
-book_id = 4
+book_id = 5
 book_to_delete = Books.query.get(book_id)
-db.session.delete(book_to_delete)
-db.session.commit()
+print(book_to_delete.title)
+# db.session.delete(book_to_delete)
+# db.session.commit()
